@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    <%= user.role==='musician' ? 'Musician Dashboard' : 'Band Dashboard' %>
+  </title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="userprofile.css">
+</head>
+
+<body>
+  <!-- Header Section -->
+  <header class="p-3 mb-3 border-bottom" style="background-color: black; color: white;" >
+    <div class="container">
+      <span class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <div class="header-container">
+  <img src="/SEMITONE_LOGO.gif" alt="Semitone" class="semitone-gif">
+  <a href="/logout" class="btn btn-danger logout-btn">Logout</a>
+</div>
+
+    </div>
+  </header>
+
+  <!-- Dashboard Section -->
+  <div class="dashboard-container container">
+    <% if (user.role==='musician' ) { %>
+      <!-- Musician Dashboard -->
+      <div class="row">
+        <!-- Profile Section -->
+        <div class="col-lg-3 col-md-4 mb-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <img src="/uploads/images/<%= user.profile_picture %>" alt="Profile Picture" class="img-thumbnail mb-3">
+              <h5 class="card-title">
+                <%= user.name %>
+              </h5>
+              <p class="text-muted mb-3">Musician | <%= user.instrument %>
+                <div class="reviews">
+                  <h2>Reviews</h2>
+                  <div id="reviewsContainer">
+                    <!-- Reviews will be displayed here -->
+                  </div>
+                </div>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content Section -->
+        <div class="col-lg-6 col-md-8">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">User Information:</h5>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Email:</strong>
+                  <%= user.email %>
+                  <li class="list-group-item"><strong>Social Media Links:</strong>
+                  <a href="https://www.instagram.com"><img src="Instagram.png" style="height: 20px;"></a>
+                  <a href="https://www.facebook.com"><img src="downloadfb.png" style="height: 20px;"</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Professional Details:</h5>
+              <ul class="professional details">
+            
+                <li class="experience">
+                  <strong>Experience:</strong><%= user.description %>
+                 
+              </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="followers">
+        <div class="card">
+          <h5 class="card-title">Followers</h5>
+          <p id="followersCount" class="h4">Loading...</p>
+          <button id="followButton" class="btn btn-primary">Follow</button>
+        </div>
+      </div>
+      
+      <section class="container my-4">
+        <h2 class="mb-4">User Posts</h2>
+        <div class="row g-3">
+          <!-- Post 1 -->
+          <div class="col-md-4">
+            <div class="card">
+              <video src="/uploads/videos/<%= user.video %" controls></video>
+              <div class="card-body">
+                <h5 class="card-title">Acoustic Vibes</h5>
+                <p class="card-text">A soothing new track with a mix of relaxing melodies and acoustic guitar.</p>
+              </div>
+            </div>
+          </div>        
+ <section class="container my-5">
+  <h2 class="mb-4">Leave a Review</h2>
+  <div class="card">
+    <div class="card-body">
+      <form action="#" method="post">
+        <div class="mb-3">
+          <form id="ratingForm">
+          <input type="hidden" id="musicianId" value="<%= musicianId %>">
+          <input type="hidden" id="userId" value="<%= userId %>">
+          <label for="rating">Rating:</label>
+          <select id="rating" required>
+            <option value="">Select a rating</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="userReview" class="form-label">Your Review</label>
+          <textarea class="form-control" id="userReview" name="userReview" rows="4" placeholder="Write your review here..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+      </form>
+    </div>
+  </div>
+</section>
+ </form>
+        
+  </section>
+
+
+      <div class="reviews">
+        <h2>Reviews</h2>
+        <div id="reviewsContainer">
+          <!-- Reviews will be displayed here -->
+        </div>
+      </div>
+ <!-- Footer Section -->
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
+
+  <script>
+    const API_URL = 'http://localhost:3000'; // Replace with your backend URL
+
+
+    function generateStars(rating) {
+      const filledStars = '★'.repeat(rating);  // Repeat filled star for the rating
+      const emptyStars = '☆'.repeat(5 - rating);  // Repeat empty star for the remaining spots
+      return filledStars + emptyStars;
+    }
+
+    async function loadMusicianData() {
+    const musicianId = document.getElementById('musicianId').value;
+
+    try {
+      // Fetch reviews for the musician
+      const reviewsResponse = await fetch(`${API_URL}/ratings/${musicianId}/reviews`);
+      const reviewsData = await reviewsResponse.json();
+
+      // Check if reviews are found
+      if (reviewsData.length > 0) {
+        // Display reviews
+        const reviewsContainer = document.getElementById('reviewsContainer');
+        reviewsContainer.innerHTML = reviewsData.map(review => `
+          <div class="review">
+            <p>Rated this musician ${generateStars(review.rating)}</p>
+            <p>Reviews- ${review.comment}</p>
+          </div>
+        `).join('');
+      } else {
+        document.getElementById('reviewsContainer').innerHTML = '<p>No reviews yet.</p>';
+      }
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    }
+  }
+
+    // Rating Form Submission
+
+    const ratingForm = document.getElementById('ratingForm');
+    ratingForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const rating = document.getElementById('rating').value;
+      const comment = document.getElementById('comment').value;
+      const musicianId = document.getElementById('musicianId').value;
+      const userId = document.getElementById('userId').value;
+
+      try {
+        const response = await fetch('/ratings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            musician_id: musicianId,
+            user_id: userId,
+            rating,
+            comment
+          })
+        });
+
+        if (response.ok) {
+          alert('Rating submitted successfully!');
+        } else {
+          alert('Failed to submit rating.');
+        }
+      } catch (error) {
+        console.error('Error submitting rating:', error);
+      }
+    });
+  ///end of followers  
+  const API_URL = 'http://localhost:3000'; // Replace with your backend URL
+  let followersCount = 0; // Placeholder initial count
+  const followersDisplay = document.getElementById('followersCount');
+  const followButton = document.getElementById('followButton');
+
+  // Function to fetch and display the follower count
+  async function loadFollowersCount() {
+    try {
+      const response = await fetch(`${API_URL}/followers`);
+      const data = await response.json();
+      followersCount = data.count || 0;
+      followersDisplay.textContent = followersCount;
+    } catch (error) {
+      console.error('Error fetching followers count:', error);
+      followersDisplay.textContent = 'Error';
+    }
+  }
+
+  // Function to handle follow button click
+  async function handleFollow() {
+    try {
+      const response = await fetch(`${API_URL}/followers`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: '<%= user.id %>' }),
+      });
+
+      if (response.ok) {
+        followersCount++;
+        followersDisplay.textContent = followersCount;
+        followButton.textContent = 'Following';
+        followButton.disabled = true; // Disable the button after following
+      } else {
+        alert('Failed to follow.');
+      }
+    } catch (error) {
+      console.error('Error following:', error);
+    }
+  }
+  
+
+  // Add event listener to the follow button
+  followButton.addEventListener('click', handleFollow);
+
+  // Load followers count on page load
+  loadFollowersCount();
+///end of follower
+
+
+    // Load musician data on page load
+    if (document.getElementById('musicianId')) {
+      loadMusicianData();
+    }
+    
+  </script>
+  <footer class="bg-dark text-white py-4 mt-5">
+    <div class="footer-content text-center">
+      <p>&copy; 2024 Semitones. All rights reserved.</p>
+      <ul class="nav justify-content-center">
+        <li class="nav-item"><a href="#" class="nav-link text-white"><i class="fab fa-facebook"></i></a></li>
+        <li class="nav-item"><a href="#" class="nav-link text-white"><i class="fab fa-twitter"></i></a></li>
+        <li class="nav-item"><a href="#" class="nav-link text-white"><i class="fab fa-instagram"></i></a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+
+</html>
